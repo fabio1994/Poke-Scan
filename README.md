@@ -24,7 +24,6 @@ Web app **self-hosted** per riconoscere, catalogare e valutare le tue carte Pok√
 11. [Risoluzione dei problemi](#risoluzione-dei-problemi)
 12. [Sicurezza e privacy](#sicurezza-e-privacy)
 13. [Crediti e note legali](#crediti-e-note-legali)
-14. [Licenza](#licenza)
 
 ---
 
