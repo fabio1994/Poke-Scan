@@ -392,7 +392,3 @@ Scrive i risultati in `collezione.csv`. Su Windows lo script apre una finestra O
 - *Pokémon* e i nomi, le immagini e i marchi delle carte appartengono ai rispettivi titolari (Nintendo, Creatures, Game Freak, The Pokémon Company). Questo progetto è indipendente e **non affiliato**.
 - I prezzi sono **indicativi**, non una stima ufficiale né una consulenza.
 - Rispetta i termini d'uso di ciascun servizio e le norme locali sui dati.
-
-## Licenza
-
-[MIT](LICENSE).
