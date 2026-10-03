@@ -1,0 +1,8 @@
+services:
+  pokescan:
+    build: .
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./pokedata:/app/pokedata     # database, indici, password e chiavi: restano sul tuo computer/server
+    restart: unless-stopped

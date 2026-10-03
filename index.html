@@ -1,0 +1,279 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000"><title>Pokescan</title>
+<link rel="apple-touch-icon" href="/static/icon-180.png"><link rel="icon" type="image/png" href="/static/icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pokescan"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{color-scheme:dark;--g:rgba(255,255,255,.07);--b:rgba(255,255,255,.14);--t:#f5f5f7;--m:#8e8e93;--a:#0a84ff;--ok:#30d158;--w:#ff9f0a;--r:#ff453a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+body{margin:0;color:var(--t);font:15px system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;background:radial-gradient(800px 480px at 12% -8%,#13243f,transparent 60%),radial-gradient(700px 480px at 100% 105%,#2b1340,transparent 55%),#000 fixed}
+main{max-width:980px;margin:auto;padding:calc(env(safe-area-inset-top) + 12px) 14px calc(100px + env(safe-area-inset-bottom))}
+.g{background:var(--g);border:1px solid var(--b);border-radius:20px;padding:14px;-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
+h2{margin:6px 2px 12px;font-size:26px;letter-spacing:-.5px}h3{margin:0 0 4px;font-size:20px}
+.m{color:var(--m);font-size:13px}.row{display:flex;gap:10px;margin:10px 0}.row>*{flex:1;min-width:0}
+select,input{width:100%;background:rgba(255,255,255,.08);border:1px solid var(--b);color:var(--t);border-radius:12px;padding:11px 12px;font-size:16px;outline:0}
+select:focus,input:focus,button:focus-visible{border-color:var(--a)}
+.btn{border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:600;background:var(--a);color:#fff;cursor:pointer;width:100%}
+.btn.s{background:var(--g);border:1px solid var(--b)}.btn.d{background:rgba(255,69,58,.18);color:var(--r)}
+.lnk{background:none;border:0;color:var(--m);padding:12px;width:100%;font-size:15px;cursor:pointer}
+.cam{position:relative;aspect-ratio:3/4;max-height:60vh;width:100%;margin:12px auto;border-radius:24px;overflow:hidden;background:#05070b;border:1px solid var(--b)}
+.cam video,.cam canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+[hidden]{display:none!important}.chips{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}.chip{flex:1;padding:10px 0;border-radius:12px;border:1px solid var(--b);background:rgba(255,255,255,.06);color:inherit;font-weight:600;cursor:pointer}.chip.on{background:#0a84ff;border-color:#0a84ff;color:#fff}
+.guide{position:absolute;inset:7% 14%;border:2px dashed rgba(255,255,255,.28);border-radius:14px;pointer-events:none}
+#st{position:absolute;left:12px;right:12px;bottom:12px;padding:10px 14px;border-radius:14px;text-align:center;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+@media(min-width:640px){.grid{grid-template-columns:repeat(4,1fr)}}@media(min-width:900px){.grid{grid-template-columns:repeat(5,1fr)}}
+.tile{padding:8px;cursor:pointer;position:relative;border-radius:16px}
+.tile img{width:100%;aspect-ratio:5/7;object-fit:contain;border-radius:8px;display:block}
+.tile b{display:block;margin-top:6px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .p{color:var(--ok);font-weight:600}.qb{position:absolute;top:10px;right:10px;background:var(--a);border-radius:99px;padding:2px 9px;font-size:13px;font-weight:700}
+.pill{display:inline-block;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:600;margin-top:6px}
+.pill.ok{background:rgba(48,209,88,.18);color:var(--ok)}.pill.w{background:rgba(255,159,10,.18);color:var(--w)}.pill.i{background:var(--g);color:var(--m)}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:6px;border-radius:99px;background:rgba(30,30,34,.6);border:1px solid var(--b);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px);z-index:5}
+nav button{border:0;background:none;color:var(--m);padding:12px 18px;border-radius:99px;font-size:16px;font-weight:600;cursor:pointer}
+nav button.on{background:rgba(255,255,255,.14);color:var(--t)}
+.sh{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.sh>.g{width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;background:rgba(22,22,26,.88);padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+.top{display:flex;gap:14px;align-items:flex-start}.big{width:42%;max-width:210px;border-radius:10px}
+.alt{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--b);cursor:pointer}.alt img{width:46px;border-radius:5px}
+#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%);z-index:20;padding:12px 18px;border-radius:16px;background:rgba(48,209,88,.2);border:1px solid rgba(48,209,88,.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);max-width:92vw}
+.sgrid{grid-template-columns:repeat(2,1fr)}@media(min-width:640px){.sgrid{grid-template-columns:repeat(3,1fr)}}@media(min-width:900px){.sgrid{grid-template-columns:repeat(4,1fr)}}
+.lg{height:84px;display:flex;align-items:center;justify-content:center;text-align:center}.tile .lg img{width:auto;max-width:100%;max-height:100%;aspect-ratio:auto;border-radius:0}
+.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.12);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--ok));border-radius:9px}
+.qty{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0}.qty button{width:44px;height:44px;border-radius:99px;border:1px solid var(--b);background:var(--g);color:var(--t);font-size:22px;cursor:pointer}
+@media(prefers-reduced-motion:no-preference){.sh>.g{animation:up .22s ease-out}@keyframes up{from{transform:translateY(40px);opacity:0}}}
+</style></head><body>
+<main>
+<section id="v-scan">
+  <h2>Scansiona</h2>
+  <div class="g">
+    <div class="row"><select id="fl" aria-label="Lingua"></select><select id="fs" aria-label="Pacchetto"></select></div>
+    <div class="m">Auto cerca in tutte le lingue e in tutti i pacchetti. Scegline uno per restringere la ricerca.</div>
+  </div>
+  <div class="cam"><video id="vid" playsinline muted></video><canvas id="ov"></canvas><div class="guide"></div><div id="st">Avvio fotocamera…</div></div>
+  <div class="row"><span class="m" id="zl" style="min-width:110px">Zoom 1.0×</span><input id="zoom" type="range" min="1" max="4" step="0.1" value="1" style="flex:1" aria-label="Zoom fotocamera"></div>
+  <div class="row"><button class="btn s" id="bfl" hidden>Flash: spento</button></div>
+  <div class="row"><button class="btn s" id="bbg">Sfondo vuoto: non memorizzato</button></div>
+  <div class="row"><button class="btn s" id="bsal">Salvataggio automatico: no</button><select id="cdef" aria-label="Condizione predefinita" style="max-width:110px"></select></div>
+  <div class="row"><button class="btn s" id="bauto">Scansione automatica: sì</button><button class="btn" id="bnow">Scansiona ora</button></div>
+  <div class="row"><label class="btn s" style="text-align:center">Da galleria<input id="gf" type="file" accept="image/*" hidden></label><button class="btn s" id="bcerca">Cerca per nome</button></div>
+</section>
+<section id="v-set" hidden><h2>Set</h2><div id="setbody"></div></section>
+<section id="v-coll" hidden>
+  <h2>Collezione</h2>
+  <div class="g"><div id="sum" style="font-size:20px;font-weight:700"></div>
+    <div class="row"><input id="cn" placeholder="Cerca per nome" type="search"><select id="cr"></select></div>
+    <div class="row"><input id="cmin" type="number" min="0" step="0.5" inputmode="decimal" placeholder="Prezzo min"><input id="cmax" type="number" min="0" step="0.5" inputmode="decimal" placeholder="Prezzo max"><select id="co"><option value="rec">Più recenti</option><option value="pd">Prezzo ↓</option><option value="pa">Prezzo ↑</option><option value="n">Nome</option></select></div>
+    <div class="row"><button class="btn s" id="bagg">Aggiorna prezzi</button><a class="btn s" href="/export.csv" style="text-align:center;text-decoration:none;color:inherit">Esporta Excel</a></div>
+    <div class="row"><select id="cc"><option value="">Tutte le condizioni</option><option value="NM">Near Mint</option><option value="LP">Lightly Played</option><option value="MP">Moderately Played</option><option value="HP">Heavily Played</option><option value="DMG">Danneggiata</option></select><button class="btn s" id="bbk">Backup ora</button></div>
+    <div class="row"><button class="btn s" id="bcarte">Aggiorna elenco carte</button></div><div class="m" id="stinfo"></div><div class="row"><a class="btn s" href="/logout" style="text-align:center;text-decoration:none;color:inherit">Esci</a></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+</main>
+<nav><button id="n-scan" class="on">Scansiona</button><button id="n-set">Set</button><button id="n-coll">Collezione</button></nav>
+<div id="sheet" class="sh" hidden><div class="g" id="sb"></div></div>
+<div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const api=(u,o)=>fetch(u,o).then(async r=>{if(r.status===401){location='/login';throw 'sessione scaduta'}const t=await r.text();try{return JSON.parse(t)}catch(e){throw 'Il server ha risposto in modo non valido (codice '+r.status+')'}});
+const usd=v=>v==null?'—':'$ '+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const eur=(v,c)=>v==null?'—':v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+(c==='USD'?' $':' €');
+const S={cond:'NM',zd:1,hw:false,auto:true,fase:'cerca',assente:0,ferma:0,prev:null,cand:[],sel:0,man:false,righe:[],f:{langs:[],sets:[]}};
+const COND=[['NM','Near Mint'],['LP','Lightly Played'],['MP','Moderately Played'],['HP','Heavily Played'],['DMG','Danneggiata']];
+const LN=l=>(S.f.langs.find(x=>x.id===l)||{}).nome||l.toUpperCase();
+const imgU=(l,id)=>`/img/${l}/${encodeURIComponent(id)}`;
+let tt;function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>e.hidden=true,3200)}
+const stato=t=>$('#st').textContent=t;
+
+/* ---- navigazione ---- */
+function go(v){for(const x of['scan','set','coll']){$('#v-'+x).hidden=x!==v;$('#n-'+x).classList.toggle('on',x===v)}
+  if(v==='scan')cam();else{fermaCam();caricaColl()}}
+$('#n-scan').onclick=()=>go('scan');$('#n-set').onclick=()=>go('set');$('#n-coll').onclick=()=>go('coll');
+
+/* ---- filtri lingua / pacchetto ---- */
+function fillSets(){const l=$('#fl').value,v=$('#fs').value;
+  const L=S.f.sets.filter(s=>!l||s.langs.includes(l)).map(s=>({id:s.id,n:s.names[l]||s.names.en||Object.values(s.names)[0]})).sort((a,b)=>a.n.localeCompare(b.n));
+  $('#fs').innerHTML='<option value="">Pacchetto: auto (tutti)</option>'+L.map(s=>`<option value="${esc(s.id)}">${esc(s.n)}</option>`).join('');
+  if(L.some(s=>s.id===v))$('#fs').value=v}
+async function initFiltri(){S.f=await api('/api/filtri');
+  $('#fl').innerHTML='<option value="">Lingua: auto (tutte)</option>'+S.f.langs.map(l=>`<option value="${l.id}">${esc(l.nome)}</option>`).join('');fillSets()}
+$('#fl').onchange=fillSets;
+
+/* ---- fotocamera e scansione automatica ---- */
+async function cam(){
+  if(S.stream)return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){stato('La fotocamera richiede HTTPS. Apri l\'indirizzo https:// oppure usa "Da galleria".');return}
+  try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    const v=$('#vid');v.srcObject=S.stream;await v.play();iniZoom();S.fase='cerca';S.ferma=0;S.prev=null;stato('Appoggia una carta davanti alla fotocamera');loop()}
+  catch(e){S.stream=null;stato('Fotocamera non disponibile ('+e.name+'). Consenti l\'accesso oppure usa "Da galleria".')}}
+function fermaCam(){S.torch=false;clearTimeout(S.t);if(S.stream)S.stream.getTracks().forEach(t=>t.stop());S.stream=null}
+function iniFlash(cap){const b=$('#bfl');S.torch=false;b.hidden=!cap.torch;b.textContent='Flash: spento'}
+$('#bfl').onclick=async()=>{const t=S.stream&&S.stream.getVideoTracks()[0];if(!t)return;
+  try{await t.applyConstraints({advanced:[{torch:!S.torch}]});S.torch=!S.torch;$('#bfl').textContent='Flash: '+(S.torch?'acceso':'spento')}
+  catch(e){toast('Flash non disponibile su questa fotocamera');$('#bfl').hidden=true}};
+function iniZoom(){const s=$('#zoom'),t=S.stream&&S.stream.getVideoTracks()[0],cap=t&&t.getCapabilities?t.getCapabilities():{};
+  iniFlash(cap);S.hw=!!cap.zoom;if(S.hw){s.min=cap.zoom.min;s.max=Math.min(cap.zoom.max,8);s.step=cap.zoom.step||0.1}else{s.min=1;s.max=4;s.step=0.1}
+  const z=parseFloat(localStorage.getItem('zoom')||'1');s.value=Math.min(Math.max(z,+s.min),+s.max);applicaZoom(+s.value)}
+async function applicaZoom(z){S.zd=1;const v=$('#vid');v.style.transform='';
+  if(S.hw){try{await S.stream.getVideoTracks()[0].applyConstraints({advanced:[{zoom:z}]})}catch(e){S.hw=false}}
+  if(!S.hw){S.zd=z;if(z>1)v.style.transform='scale('+z+')'}
+  $('#zl').textContent='Zoom '+z.toFixed(1)+'×'+(S.hw?'':' (digitale)');localStorage.setItem('zoom',z)}
+$('#zoom').oninput=e=>applicaZoom(+e.target.value);
+function frame(maxw){const v=$('#vid'),z=S.zd||1,sw=v.videoWidth/z,sh=v.videoHeight/z,sx=(v.videoWidth-sw)/2,sy=(v.videoHeight-sh)/2,k=Math.min(1,maxw/sw),c=document.createElement('canvas');
+  c.width=Math.round(sw*k);c.height=Math.round(sh*k);c.getContext('2d').drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(r,'image/jpeg',.88))}
+function disegna(q){const c=$('#ov'),b=c.getBoundingClientRect(),x=c.getContext('2d'),v=$('#vid');
+  c.width=b.width;c.height=b.height;x.clearRect(0,0,c.width,c.height);if(!q||!v.videoWidth)return;
+  const k=Math.max(b.width/v.videoWidth,b.height/v.videoHeight),ox=(b.width-v.videoWidth*k)/2,oy=(b.height-v.videoHeight*k)/2;
+  x.beginPath();q.forEach((p,i)=>{const X=p[0]*v.videoWidth*k+ox,Y=p[1]*v.videoHeight*k+oy;i?x.lineTo(X,Y):x.moveTo(X,Y)});
+  x.closePath();x.lineWidth=3;x.strokeStyle='#30d158';x.stroke()}
+S.bg=false;
+$('#bbg').onclick=async()=>{const b=$('#bbg');
+  try{if(S.bg){await fetch('/api/sfondo',{method:'DELETE'});S.bg=false;b.textContent='Sfondo vuoto: non memorizzato';return toast('Sfondo rimosso')}
+    if(!S.stream)return toast('Avvia prima la fotocamera, senza carte davanti');
+    const fd=new FormData();fd.append('foto',await frame(1280),'f.jpg');const r=await api('/api/sfondo',{method:'POST',body:fd});if(r.errore)throw r.errore;
+    S.bg=true;b.textContent='Sfondo memorizzato · tocca per rimuovere';toast('Sfondo memorizzato: non muovere piu\' telefono e zoom')}
+  catch(e){toast('Errore sfondo')}};
+const corr=(a,b)=>{const n=a.length,ma=a.reduce((s,x)=>s+x,0)/n,mb=b.reduce((s,x)=>s+x,0)/n;let sab=0,saa=0,sbb=0;
+  for(let i=0;i<n;i++){const x=a[i]-ma,y=b[i]-mb;sab+=x*y;saa+=x*x;sbb+=y*y}return sab/Math.sqrt(saa*sbb||1)};
+S.sa=localStorage.getItem('sa')==='1';S.condDef=localStorage.getItem('cdef')||'NM';
+$('#cdef').innerHTML=COND.map(c=>`<option value="${c[0]}"${c[0]===S.condDef?' selected':''}>${c[0]}</option>`).join('');
+$('#cdef').onchange=e=>{S.condDef=e.target.value;localStorage.setItem('cdef',S.condDef)};
+$('#bsal').textContent='Salvataggio automatico: '+(S.sa?'sì':'no');
+$('#bsal').onclick=()=>{S.sa=!S.sa;localStorage.setItem('sa',S.sa?'1':'0');$('#bsal').textContent='Salvataggio automatico: '+(S.sa?'sì':'no')};
+async function salvaAuto(){const c=S.cand[0];
+  try{const r=await api('/api/salva',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},c,{condiz:S.condDef,stato:S.stR,proposta:S.prop,pos:0}))});
+    toast('Salvata: '+c.nome+' · '+S.condDef+(r.qta>1?' · ora ne hai '+r.qta:''));if(navigator.vibrate)navigator.vibrate(40)}
+  catch(e){toast('Errore nel salvataggio')}
+  riparti()}
+async function loop(){
+  if(!S.stream)return;
+  try{if(S.auto&&(S.fase==='cerca'||S.fase==='attendi')){
+    const fd=new FormData();fd.append('foto',await frame(480),'f.jpg');
+    const d=await api('/api/rileva',{method:'POST',body:fd});
+    if(S.fase==='cerca'||S.fase==='attendi')disegna(d.quad);
+    if(S.fase==='attendi'){
+      if(d.trovata){S.assente=0;if(S.firma0&&d.firma&&corr(d.firma,S.firma0)<.93){S.fase='cerca';S.ferma=0;S.prev=null;stato('Nuova carta rilevata')}}
+      else if(++S.assente>=2){S.fase='cerca';S.ferma=0;S.prev=null;stato('Appoggia la prossima carta')}}
+    else if(!d.trovata){S.ferma=0;S.prev=null;stato('Appoggia una carta davanti alla fotocamera')}
+    else{S.firmaUlt=d.firma;const p=S.prev;S.prev=d.quad;
+      S.ferma=p&&d.quad.every((a,i)=>Math.abs(a[0]-p[i][0])<.02&&Math.abs(a[1]-p[i][1])<.02)?S.ferma+1:0;
+      stato(S.ferma?'Tieni ferma la carta…':'Carta rilevata');
+      if(S.ferma>=2)return scansiona(await tre())}}
+  }catch(e){}
+  S.t=setTimeout(loop,350)}
+$('#bauto').onclick=()=>{S.auto=!S.auto;$('#bauto').textContent='Scansione automatica: '+(S.auto?'sì':'no');if(!S.auto){disegna(null);stato('Premi "Scansiona ora"')}else{S.fase='cerca';S.ferma=0;clearTimeout(S.t);loop()}};
+$('#bnow').onclick=async()=>{if(!S.stream)return stato('Fotocamera non attiva: usa "Da galleria".');if(S.fase==='scansione'||S.fase==='conferma')return;clearTimeout(S.t);scansiona(await tre())};
+$('#gf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f){clearTimeout(S.t);scansiona(f)}};
+async function scansiona(blob){
+  S.firma0=S.firmaUlt;S.fase='scansione';stato('Riconoscimento in corso…');disegna(null);
+  const fd=new FormData();[].concat(blob).forEach((b,i)=>fd.append('foto',b,'f'+i+'.jpg'));fd.append('lang',$('#fl').value);fd.append('set',$('#fs').value);
+  try{const d=await api('/api/scan',{method:'POST',body:fd});if(d.errore)throw d.errore;
+    S.cand=d.candidati;S.prop=d.candidati[0].card_id;S.sel=0;S.man=false;S.stR=d.stato;if(S.sa&&d.stato==='ok')return salvaAuto();S.fase='conferma';renderConf();$('#sheet').hidden=false;if(navigator.vibrate)navigator.vibrate(40)}
+  catch(e){stato('Errore: '+e);riparti()}}
+function riparti(){S.fase=S.stream?'attendi':'cerca';S.assente=0;S.ferma=0;S.prev=null;if(S.stream&&S.auto){clearTimeout(S.t);S.t=setTimeout(loop,300)}}
+
+/* ---- conferma / correzione ---- */
+function renderConf(){const c=S.cand[S.sel];
+  const pill=S.man?['i','Scelta manuale']:S.sel>0?['i','Alternativa']:S.stR==='ok'?['ok','Riconoscimento sicuro']:['w','Da verificare'];
+  $('#sb').innerHTML=`<div class="top"><img class="big" src="${imgU(c.lang,c.card_id)}" alt=""><div><h3>${esc(c.nome)}</h3>
+  <div class="m">${esc(c.set)}<br>N. ${esc(c.numero)} · ${esc(LN(c.lang))}</div><span class="pill ${pill[0]}">${pill[1]}</span></div></div>
+  <div class="m" style="margin-top:10px">Condizione</div><div class="chips" id="cc2">${COND.map(c=>`<button class="chip${S.cond===c[0]?' on':''}" data-c="${c[0]}">${c[0]}</button>`).join('')}</div>
+  <div class="row"><button class="btn" id="bok">Conferma</button><button class="btn s" id="bcor">Correggi</button></div>
+  <button class="lnk" id="bsc">Scarta</button><div id="alt"></div>`;
+  document.querySelectorAll('#cc2 .chip').forEach(b=>b.onclick=()=>{S.cond=b.dataset.c;document.querySelectorAll('#cc2 .chip').forEach(x=>x.classList.toggle('on',x===b))});
+  $('#bok').onclick=conferma;$('#bcor').onclick=altri;$('#bsc').onclick=chiudi}
+function altri(){const a=S.cand.map((c,i)=>({c,i})).filter(x=>x.i!==S.sel);
+  $('#alt').innerHTML='<div class="m" style="margin:6px 0">Altre possibilità</div>'+a.map(x=>riga(x.c,'data-i="'+x.i+'"')).join('')+
+  '<input id="qn" placeholder="Cerca per nome" style="margin-top:10px" type="search"><div id="qr"></div>';
+  $('#alt').querySelectorAll('[data-i]').forEach(e=>e.onclick=()=>{S.sel=+e.dataset.i;renderConf()});
+  let t;$('#qn').oninput=e=>{clearTimeout(t);t=setTimeout(()=>cerca(e.target.value),300)};$('#qn').focus()}
+const riga=(c,at)=>`<div class="alt" ${at}><img src="${imgU(c.lang,c.card_id)}" alt=""><div><b>${esc(c.nome)}</b><div class="m">${esc(c.set)} · N. ${esc(c.numero)} · ${esc(LN(c.lang))}</div></div></div>`;
+async function cerca(t){if(t.trim().length<2){$('#qr').innerHTML='';return}
+  const r=await api('/api/cerca?q='+encodeURIComponent(t)+'&lang='+$('#fl').value+'&set='+$('#fs').value);
+  $('#qr').innerHTML=r.length?r.map((c,i)=>riga(c,'data-r="'+i+'"')).join(''):'<div class="m" style="padding:8px 0">Nessun risultato'+($('#fl').value||$('#fs').value?' con i filtri attivi':'')+'.</div>';
+  $('#qr').querySelectorAll('[data-r]').forEach(e=>e.onclick=()=>{S.cand.unshift(r[+e.dataset.r]);S.sel=0;S.man=true;renderConf()})}
+async function conferma(){const c=S.cand[S.sel];$('#bok').disabled=true;$('#bok').textContent='Salvataggio…';
+  try{const r=await api('/api/salva',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},c,{condiz:S.cond,stato:S.man?'manuale':S.sel>0?'corretto':S.stR,proposta:S.prop,pos:S.man?-1:S.sel}))});
+    toast('Salvata: '+c.nome+' · '+S.cond+(r.qta>1?' · ora ne hai '+r.qta:''))}catch(e){toast('Errore nel salvataggio')}
+  chiudi()}
+function chiudi(){S.cond='NM';$('#sheet').hidden=true;if(S.fase==='conferma'||S.fase==='scansione')riparti()}
+$('#sheet').onclick=e=>{if(e.target.id==='sheet'){const d=S.det;S.det=null;d?$('#sheet').hidden=true:chiudi()}};
+$('#bcerca').onclick=()=>{S.cand=[];S.prop=null;S.man=true;S.fase='conferma';$('#sheet').hidden=false;
+  $('#sb').innerHTML='<h3>Cerca per nome</h3><input id="qn" placeholder="Nome della carta" type="search"><div id="qr"></div><button class="lnk" id="bsc">Chiudi</button>';
+  $('#bsc').onclick=chiudi;let t;$('#qn').oninput=e=>{clearTimeout(t);t=setTimeout(()=>cerca(e.target.value),300)};$('#qn').focus()};
+
+/* ---- collezione ---- */
+async function caricaColl(){const d=await api('/api/collezione');S.righe=d.righe;S.chiave=d.chiave;stInfo();
+  const v=$('#cr').value,R=[...new Set(S.righe.map(r=>r.rarita))].sort();
+  $('#cr').innerHTML='<option value="">Tutte le rarità</option>'+R.map(r=>`<option>${esc(r)}</option>`).join('');if(R.includes(v))$('#cr').value=v;grid();if(!$('#v-set').hidden)await caricaSet()}
+async function stInfo(){const s=await api('/api/stato'),f=d=>d?new Date(d).toLocaleDateString('it-IT'):'mai';
+  $('#stinfo').textContent='Elenco carte ('+s.totale+') aggiornato il '+f(s.carte)+(s.nuove?' · '+s.nuove+' nuove':'')+(s.in_corso?' · aggiornamento in corso…':'')+' · prezzi il '+f(s.prezzi)+' · backup '+f(s.backup)+(s.ric_tot?' · riconoscimento '+Math.round(100*s.ric_ok/s.ric_tot)+'% ('+s.ric_tot+' scansioni)':'')}
+$('#bcarte').onclick=async()=>{await api('/api/aggiorna-carte',{method:'POST'});toast('Verifica nuove carte avviata: può richiedere alcuni minuti');setTimeout(stInfo,4000)};
+function grid(){const n=$('#cn').value.toLowerCase(),r=$('#cr').value,mn=parseFloat($('#cmin').value),mx=parseFloat($('#cmax').value),o=$('#co').value;
+  const L=S.righe.filter(x=>(!n||x.nome.toLowerCase().includes(n))&&(!r||x.rarita===r)&&(!$('#cc').value||x.condiz===$('#cc').value)&&(isNaN(mn)||(x.usd??0)>=mn)&&(isNaN(mx)||(x.usd??0)<=mx));
+  if(o==='n')L.sort((a,b)=>a.nome.localeCompare(b.nome));
+  const G=new Map();L.forEach(x=>{const k=x.card_id+'|'+x.lang;if(!G.has(k))G.set(k,{rep:x,qta:0,usd:0,ok:false});const g=G.get(k);g.qta+=x.qta;if(x.usd!=null){g.usd+=x.usd*x.qta;g.ok=true}});
+  const gl=[...G.values()];if(o==='pd')gl.sort((a,b)=>(b.ok?b.usd:-1)-(a.ok?a.usd:-1));if(o==='pa')gl.sort((a,b)=>(a.ok?a.usd:1e9)-(b.ok?b.usd:1e9));
+  const tot=gl.reduce((s,g)=>s+g.usd,0),pz=L.reduce((s,x)=>s+x.qta,0),sp=L.filter(x=>x.usd==null).reduce((s,x)=>s+x.qta,0);
+  $('#sum').textContent=S.righe.length?pz+' carte · '+usd(tot)+(S.chiave?(sp?' · '+sp+' senza prezzo TCG':''):' · chiave JustTCG non impostata'):'Nessuna carta';
+  $('#grid').innerHTML=gl.length?gl.map(g=>`<div class="g tile" data-id="${g.rep.id}"><img loading="lazy" src="${imgU(g.rep.lang,g.rep.card_id)}" alt="">${g.qta>1?'<span class="qb">×'+g.qta+'</span>':''}<b>${esc(g.rep.nome)}</b><span class="p">${usd(g.ok?g.usd:null)}</span></div>`).join(''):
+    '<div class="m" style="grid-column:1/-1;text-align:center;padding:30px">'+(S.righe.length?'Nessuna carta con questi filtri.':'La collezione è vuota. Scansiona la tua prima carta.')+'</div>';
+  document.querySelectorAll('.tile').forEach(e=>e.onclick=()=>dettaglio(+e.dataset.id))}
+['cn','cmin','cmax'].forEach(i=>$('#'+i).oninput=grid);['cr','co','cc'].forEach(i=>$('#'+i).onchange=grid);
+$('#bagg').onclick=async()=>{await api('/api/aggiorna',{method:'POST'});toast('Aggiornamento prezzi avviato: ricarica tra un minuto')};
+function grafico(P){if(P.length<2)return'<div class="m" style="padding:14px 0">Lo storico si costruisce un giorno alla volta: servono almeno due rilevazioni.</div>';
+  const W=320,H=150,p=28,v=P.map(x=>x.valore),mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1,t=P.map(x=>Date.parse(x.giorno)),t0=t[0],tr=(t[t.length-1]-t0)||1;
+  const X=i=>p+(t[i]-t0)/tr*(W-2*p),Y=a=>H-p-(a-mn)/rg*(H-2*p),pts=P.map((x,i)=>X(i).toFixed(1)+','+Y(x.valore).toFixed(1)),up=v[v.length-1]>=v[0],col=up?'#30d158':'#ff453a',ds=s=>new Date(s).toLocaleDateString('it-IT',{day:'2-digit',month:'short'});
+  const pc=(v[v.length-1]-v[0])/(v[0]||1)*100;
+  return`<div class="m" style="margin-top:12px">Andamento: <b style="color:${col}">${pc>=0?'+':''}${pc.toFixed(1)}%</b> dal ${ds(P[0].giorno)}</div>
+  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Grafico prezzi"><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+  <polygon points="${X(0).toFixed(1)},${H-p} ${pts.join(' ')} ${X(P.length-1).toFixed(1)},${H-p}" fill="url(#gr)"/><polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>
+  ${P.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x.valore).toFixed(1)}" r="3" fill="${col}"/>`).join('')}
+  <g fill="#8e8e93" font-size="10"><text x="4" y="${p-8}">${mx.toFixed(2)}</text><text x="4" y="${H-p+4}">${mn.toFixed(2)}</text><text x="${p}" y="${H-6}">${ds(P[0].giorno)}</text><text x="${W-p}" y="${H-6}" text-anchor="end">${ds(P[P.length-1].giorno)}</text></g></svg>`}
+const CC={NM:'#30d158',LP:'#0a84ff',MP:'#ff9f0a',HP:'#ff453a',DMG:'#bf5af2'};
+function graficoTcg(serie){const cs=Object.keys(serie).filter(c=>serie[c].length),pts=cs.flatMap(c=>serie[c]);if(!cs.length||pts.length<2)return null;
+  const W=320,H=170,p=30,v=pts.map(x=>x.valore),mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1,t=pts.map(x=>Date.parse(x.giorno)),t0=Math.min(...t),t1=Math.max(...t),tr=(t1-t0)||1,
+  X=s=>p+(Date.parse(s)-t0)/tr*(W-2*p),Y=a=>H-p-(a-mn)/rg*(H-2*p),ds=s=>new Date(s).toLocaleDateString('it-IT',{day:'2-digit',month:'short'});
+  return`<div class="m" style="margin-top:12px">Prezzo TCG in USD, una linea per condizione</div><div class="chips" style="margin:6px 0">${cs.map(c=>`<span class="m"><b style="color:${CC[c]}">●</b> ${c} ${usd(serie[c][serie[c].length-1].valore)}</span>`).join('')}</div>
+  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Grafico prezzi TCG">${cs.map(c=>{const s=serie[c];return s.length>1?`<polyline points="${s.map(x=>X(x.giorno).toFixed(1)+','+Y(x.valore).toFixed(1)).join(' ')}" fill="none" stroke="${CC[c]}" stroke-width="2.4" stroke-linejoin="round"/>`:''}).join('')}${cs.map(c=>serie[c].map(x=>`<circle cx="${X(x.giorno).toFixed(1)}" cy="${Y(x.valore).toFixed(1)}" r="3" fill="${CC[c]}"/>`).join('')).join('')}
+  <g fill="#8e8e93" font-size="10"><text x="4" y="${p-8}">${mx.toFixed(2)}</text><text x="4" y="${H-p+4}">${mn.toFixed(2)}</text><text x="${p}" y="${H-6}">${ds(t0)}</text><text x="${W-p}" y="${H-6}" text-anchor="end">${ds(t1)}</text></g></svg>`}
+async function dettaglio(id){const x=S.righe.find(r=>r.id===id);if(!x)return;S.det=id;
+  const G=S.righe.filter(r=>r.card_id===x.card_id&&r.lang===x.lang).sort((a,b)=>COND.findIndex(c=>c[0]===a.condiz)-COND.findIndex(c=>c[0]===b.condiz));
+  const [T,P]=await Promise.all([api('/api/tcg/'+encodeURIComponent(x.card_id)),api('/api/storico/'+encodeURIComponent(x.card_id))]);
+  const n=G.reduce((s,r)=>s+r.qta,0),tot=G.reduce((s,r)=>s+(r.usd||0)*r.qta,0),gt=graficoTcg(T.serie||{});
+  $('#sb').innerHTML=`<div class="top"><img class="big" src="${imgU(x.lang,x.card_id)}" alt=""><div><h3>${esc(x.nome)}</h3><div class="m">${esc(x.set_nome)}<br>N. ${esc(x.numero)} · ${esc(LN(x.lang))}</div>
+  <span class="pill i">${esc(x.rarita)}</span><div style="font-size:26px;font-weight:700;margin-top:8px">${usd(G.some(r=>r.usd!=null)?tot:null)}</div><div class="m">${n} ${n>1?'copie':'copia'}</div></div></div>
+  ${G.map(r=>`<div class="qty" data-r="${r.id}"><select class="cs" aria-label="Condizione">${COND.map(c=>`<option value="${c[0]}"${c[0]===r.condiz?' selected':''}>${c[0]}</option>`).join('')}</select><button class="qm" aria-label="Meno">−</button><b>${r.qta}×</b><button class="qp" aria-label="Più">+</button><span class="m" style="min-width:76px;text-align:right">${usd(r.usd)}</span><button class="xd" aria-label="Elimina">✕</button></div>`).join('')}
+  ${gt||(T.collegata?'<div class="m" style="padding:14px 0">Storico TCG in costruzione: servono almeno due rilevazioni.</div>':'<div class="m" style="padding:10px 0">Prezzo TCG non disponibile per questa carta: mostro lo storico Cardmarket (€).</div>'+grafico(P))}
+  <div class="row"><button class="btn s" id="bcl">Chiudi</button></div>`;
+  $('#sheet').hidden=false;$('#bcl').onclick=()=>{S.det=null;$('#sheet').hidden=true};
+  const rim=async f=>{await f();await caricaColl();const y=S.righe.find(r=>r.card_id===x.card_id&&r.lang===x.lang);y?dettaglio(y.id):(S.det=null,$('#sheet').hidden=true)},J={'Content-Type':'application/json'};
+  document.querySelectorAll('#sb .qty').forEach(e=>{const i=+e.dataset.r,r=G.find(g=>g.id===i);
+    e.querySelector('.cs').onchange=ev=>rim(()=>api('/api/condizione/'+i,{method:'POST',headers:J,body:JSON.stringify({c:ev.target.value})}));
+    e.querySelector('.qm').onclick=()=>rim(()=>api('/api/qta/'+i,{method:'POST',headers:J,body:'{"d":-1}'}));
+    e.querySelector('.qp').onclick=()=>rim(()=>api('/api/qta/'+i,{method:'POST',headers:J,body:'{"d":1}'}));
+    e.querySelector('.xd').onclick=()=>{if(confirm('Eliminare '+x.nome+' ('+r.condiz+') dalla collezione?'))rim(()=>fetch('/api/carta/'+i,{method:'DELETE'}))}})}
+
+const sidOf=id=>id.slice(0,id.lastIndexOf('-'));
+const tile=x=>`<div class="g tile" data-id="${x.id}"><img loading="lazy" src="${imgU(x.lang,x.card_id)}" alt="">${x.qta>1?'<span class="qb">×'+x.qta+'</span>':''}<b>${esc(x.nome)}</b><span class="p">${usd(x.usd)}</span></div>`;
+const bindTiles=el=>el.querySelectorAll('.tile[data-id]').forEach(e=>e.onclick=()=>dettaglio(+e.dataset.id));
+const lg=s=>s.logo?`<img src="${esc(s.logo)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false"><span class="m" hidden>${esc(s.nome)}</span>`:`<span class="m">${esc(s.nome)}</span>`;
+const prog=s=>`<div class="bar"><i style="width:${s.totale?Math.min(100,100*s.possedute/s.totale):0}%"></i></div>`;
+async function caricaSet(t=0){S.sets=await api('/api/set');renderSet();
+  if(S.sets.some(s=>s.totale==null)&&t<3)setTimeout(()=>{if(!$('#v-set').hidden)caricaSet(t+1)},5000)}
+function renderSet(){const el=$('#setbody');
+  if(S.setSel){const s=S.sets.find(x=>x.sid+'|'+x.lang===S.setSel);if(!s){S.setSel=null;return renderSet()}
+    const L=S.righe.filter(x=>sidOf(x.card_id)===s.sid&&x.lang===s.lang).sort((a,b)=>String(a.numero).localeCompare(String(b.numero),undefined,{numeric:true}));
+    el.innerHTML=`<button class="btn s" id="sback" style="width:auto;padding:10px 16px">‹ Tutti i set</button>
+    <div class="g" style="margin-top:12px;text-align:center"><div class="lg" style="height:110px">${lg(s)}</div><div style="font-size:24px;font-weight:700;margin-top:6px">${s.possedute}/${s.totale??'?'}</div>
+    <div class="m">${esc(s.nome)} · ${esc(LN(s.lang))} · ${s.copie} ${s.copie>1?'copie':'copia'}</div>${prog(s)}</div><div class="grid">${L.map(tile).join('')}</div>`;
+    $('#sback').onclick=()=>{S.setSel=null;renderSet()};bindTiles(el);return}
+  el.innerHTML=S.sets.length?`<div class="grid sgrid">${S.sets.map(s=>`<div class="g tile st" data-k="${esc(s.sid+'|'+s.lang)}"><div class="lg">${lg(s)}</div><b>${esc(s.nome)}</b><span class="p">${s.possedute}/${s.totale??'?'}</span> <span class="m">${esc(LN(s.lang))}</span>${prog(s)}</div>`).join('')}</div>`:'<div class="m" style="text-align:center;padding:30px">Nessun set: salva prima qualche carta.</div>';
+  el.querySelectorAll('.st').forEach(e=>e.onclick=()=>{S.setSel=e.dataset.k;renderSet();scrollTo(0,0)})}
+async function tre(){const a=[await frame(1280)];for(let i=0;i<2;i++){await new Promise(r=>setTimeout(r,250));a.push(await frame(1280))}return a}
+$('#bbk').onclick=async()=>{await api('/api/backup',{method:'POST'});toast('Backup creato');stInfo()};
+initFiltri().then(()=>go('scan'));
+</script></body></html>
