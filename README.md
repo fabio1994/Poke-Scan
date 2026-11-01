@@ -216,7 +216,7 @@ e, se i fotogrammi sono più di uno, la maggioranza concorda sul primo posto. Al
 ### Cosa ti serve
 
 - **Docker** con il comando `docker compose`: Docker Desktop su Windows e macOS, Docker Engine con il plugin Compose su Linux, oppure il Container Manager di un NAS. Controlla con `docker --version` e `docker compose version`. Guida ufficiale: <https://docs.docker.com/get-docker/>
-- **Il progetto**: dal pulsante verde «Code» di questa pagina scegli «Download ZIP» ed estrailo, oppure usa `git clone <indirizzo di questo repository> pokescan`.
+- **Il progetto**: dal pulsante verde «Code» di questa pagina scegli «Download ZIP» ed estrailo, oppure usa `git clone https://github.com/fabio1994/Poke-Scan pokescan`.
 - Un **terminale aperto nella cartella del progetto** (quella che contiene `docker-compose.yml`).
 - Un processore **x86-64 o ARM64**, una connessione a Internet e spazio su disco: alcuni GB (circa 3) per l'immagine Docker più circa 1 GB per ogni lingua che indicizzi.
 
