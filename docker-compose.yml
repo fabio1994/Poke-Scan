@@ -1,0 +1,15 @@
+services:
+  pokescan:
+    build: .
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./pokedata:/app/pokedata     # database, indici, password e chiavi: restano sul tuo computer/server
+    # Facoltativo. Le chiavi si salvano di solito con "python app.py --setkey" e "--set-cardtrader-key";
+    # per usare invece le variabili d'ambiente, metti i valori in un file .env accanto a questo file
+    # (e' gia' ignorato da git: NON scriverli qui) e togli il commento alle righe seguenti.
+    # environment:
+    #   - POKESCAN_SOGLIA_ROT=0.78               # somiglianza sotto la quale si prova anche la carta capovolta
+    #   - JUSTTCG_API_KEY=${JUSTTCG_API_KEY}
+    #   - CARDTRADER_API_TOKEN=${CARDTRADER_API_TOKEN}
+    restart: unless-stopped

@@ -1,0 +1,9 @@
+flask>=3.0
+gunicorn>=22.0
+numpy>=1.26
+opencv-python-headless>=4.9
+pillow>=10.0
+requests>=2.31
+sentence-transformers>=3.0
+# PyTorch: su server senza GPU installa la versione CPU (molto piu' leggera):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
