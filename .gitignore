@@ -1,0 +1,16 @@
+# dati personali e segreti: NON pubblicare mai
+pokedata/
+*.key
+auth.json
+secret.key
+.env
+*.db
+*.db-wal
+*.db-shm
+collezione.csv
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
